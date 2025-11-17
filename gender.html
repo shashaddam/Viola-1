@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AR Gender Violence Video</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <style>
+    body, html { margin: 0; padding: 0; overflow: hidden; }
+    #loadingText { 
+      position: fixed; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      font-family: Arial;
+      color: white;
+      background: rgba(0,0,0,0.6);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loadingText">Memuat kamera...</div>
+
+<a-scene
+    vr-mode-ui="enabled: false"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    camera
+>
+    <!-- Marker -->
+    <a-marker type="pattern" url="assets/Gender.patt">
+        
+        <!-- Video akan muncul di atas marker -->
+        <a-video 
+            src="#genderVideo"
+            width="1.5"
+            height="1"
+            rotation="-90 0 0"
+            position="0 0 0"
+        ></a-video>
+
+    </a-marker>
+
+    <a-entity camera></a-entity>
+
+    <!-- Video asset -->
+    <a-assets>
+        <video id="genderVideo" src="assets/Gender.mp4" preload="auto" loop="true" crossorigin="anonymous"></video>
+    </a-assets>
+</a-scene>
+
+<script>
+  // Menyembunyikan teks loading kalau kamera sudah aktif
+  document.querySelector('a-scene').addEventListener('loaded', () => {
+    setTimeout(() => {
+      document.getElementById('loadingText').style.display = 'none';
+    }, 1000);
+  });
+
+  // Agar video otomatis play ketika marker terlihat
+  const vid = document.querySelector("#genderVideo");
+
+  document.querySelector("a-marker").addEventListener("markerFound", () => {
+    vid.play();
+  });
+
+  document.querySelector("a-marker").addEventListener("markerLost", () => {
+    vid.pause();
+  });
+</script>
+
+</body>
+</html>
